@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div id='content' style="margin: 0 40px">
+        <h1 style="text-align: center">用户注册页面</h1>
+
+        <form class="form form-horizontal" method="post" action="/user/register/">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">用户名</label>
+                <div class="col-md-5">
+                    <input class="form-control" name="username"
+                           value="{{ userForm.username.value }}"
+                           placeholder="输入用户名或手机号">
+                </div>
+                <div class="col-md-4">
+                    {% if errors.username %}
+                        <span style="color: red">{{ errors.username.0.message }}</span>
+                    {% else %}
+                        *长度8~20,可以是手机号或英文字母
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">口令</label>
+                <div class="col-md-5">
+                    <input class="form-control" type="password" name="passwd" placeholder="输入口令">
+                </div>
+                <div class="col-md-4">
+                    {% if errors.passwd %}
+                        <span style="color: red">{{ errors.username.0.message }}</span>
+                    {% else %}
+                        *长度不能低于8位,只能是字母和数字
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">重复口令</label>
+                <div class="col-md-5">
+                    <input class="form-control" type="password" name="passwd2" placeholder="确认口令">
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">邮箱</label>
+                <div class="col-md-5">
+                    <input class="form-control" name="email" placeholder="输入邮箱">
+                </div>
+                <div class="col-md-4">
+                    {% if errors.email %}
+                        <span style="color: red">{{ errors.email.0.message }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">头像</label>
+                <div class="col-md-5">
+                    <img id="preImg" src="" width="200px" height="220px"
+                    onclick="uploadFile.click()">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2">
+                    <button class="btn btn-primary">注册</button>
+                    <a href="#" class="btn btn-link">已有账号,去登陆</a>
+                </div>
+
+                <input id="photo" type="hidden" name="photo">
+            </div>
+        </form>
+        <input type="file" id="uploadFile" style="display: none;"
+            onchange="upload(this.files[0])">
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function upload(file) {
+            var formData = new FormData();
+            formData.append('photoImg',file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('post','/user/upload/',true);
+            xhr.onload = function (ev) {
+                //上传成功之后的处理
+                data = xhr.responseText;
+                //alert(data)
+                dataJson = JSON.parse(data);
+                $('#preImg').attr('src',dataJson.path);
+                $('#photo').val(dataJson.path);
+            }
+            xhr.send(formData)
+        }
+    </script>
+
+
+{% endblock %}
