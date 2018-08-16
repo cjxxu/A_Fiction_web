@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'DjangoUeditor',
-    'user'
+    'user',
+    'djcelery'   #加入djcelery
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,36 @@ STATICFILES_DIRS = [
 #设置媒体文件的请求URL和资源文件管理器的位置
 MEDIA_ROOT = os.path.join(BASE_DIR,'static/uploads')
 MEDIA_URL = '/static/uploads/'
+
+#----配置session和cache----
+CACHES = {
+    'default':{
+        'BACKEND':'django_redis.cache.RedisCache',
+        'LOCATION':'redis://127.0.0.1:6379/12',
+        'OPTIONS':{
+            'CLIENT_CLASS':'django_redis.client.DefaultClient'  #指定谅解redis的客户端类
+        }
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+
+#-----end session and cache-------
+
+
+#-----配置---celery---------
+import djcelery
+djcelery.setup_loader()
+
+BROKER_URL = 'redis://127.0.0.1:6379/12'
+CELERY_TIMEZONE = 'Asia/Shanghai'
+
+#CELERY_IMPORTS = ()
+
+#配置批量调试器
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+
+
+#-------end celery----------

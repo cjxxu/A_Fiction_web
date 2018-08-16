@@ -31,7 +31,7 @@
                                  width="200px" height="240px"></dt>
                         <dd><span>{{ art.title }}</span></dd>
                         <dd><span>作者:{{ art.author }}</span></dd>
-                        <dd class="text-center"><a class="btn btn-primary">开始阅读</a></dd>
+                        <dd class="text-center"><a  href="/art/show/{{ art.id }}/" class="btn btn-primary">开始阅读</a></dd>
                     </dl>
                 </li>
             {% endfor %}

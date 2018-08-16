@@ -17,6 +17,8 @@ from django.conf.urls import url,include
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from art.models import Tag,Art
+import json
+from user import helper
 
 import xadmin as admin
 
@@ -49,6 +51,9 @@ def toIndex(request):
     page = int(page) if page else 1  # 读取请求参数中page参数，如果没有,默认为1
     pager = paginator.page(page)  # 获取当前页的数据
 
+    #获取登录用户的信息
+    login_user= helper.getLoginInfo(request)
+
     return render(request,'index.html',locals())
 
 
@@ -56,6 +61,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^ueditor/', include('DjangoUeditor.urls')),
     url(r'^user/',include('user.urls')),
+    url(r'^art/',include('art.urls')),
     url(r'^$', toIndex),
 ]
 

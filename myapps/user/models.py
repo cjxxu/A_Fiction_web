@@ -12,7 +12,8 @@ class UserProfile(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         # 修改用户邮箱时,口令没有改变的情况下,如何避免重复加密
-        self.passwd = make_password(self.passwd)  #加密
+        if not self.passwd.startswith('pbkdf2_sha256') and len(self.passwd) <= 50:
+            self.passwd = make_password(self.passwd)  #加密
         super().save()
 
 
